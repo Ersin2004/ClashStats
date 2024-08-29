@@ -13,7 +13,7 @@ app.use(cors());
 
 // Mock players
 const mockPlayers = [
-  { tag: '#LVRQCP9G0', name: 'Player 1' },
+  { tag: '#LVRQCP9G0', name: 'Lucky' },
   { tag: '#20GPPGUL8', name: 'Player 2' },
   { tag: '#LVRQCP9G0', name: 'Player 3' },
   { tag: '#LVRQCP9G0', name: 'Player 4' },
