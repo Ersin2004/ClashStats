@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function SearchPage() {
@@ -6,15 +6,19 @@ function SearchPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingStartedAt, setLoadingStartedAt] = useState(null);
   const navigate = useNavigate();
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (!searchQuery.trim()) {
         setSearchResults([]);
+        setIsLoading(false);
         return;
       }
 
+      setLoadingStartedAt(Date.now());
       setIsLoading(true);
       setError(null);
 
@@ -26,15 +30,24 @@ function SearchPage() {
       } catch (error) {
         setError(error.message);
       } finally {
-        setIsLoading(false);
+        const timeElapsed = Date.now() - loadingStartedAt;
+        const minDisplayTime = 3000;
+        const remainingTime = Math.max(minDisplayTime - timeElapsed, 0);
+        
+        timeoutRef.current = setTimeout(() => {
+          setIsLoading(false);
+        }, remainingTime);
       }
     };
 
     const debounceFetch = setTimeout(() => {
       fetchSearchResults();
-    }, 300); // Debounce delay
+    }, 300); // 3 sec
 
-    return () => clearTimeout(debounceFetch);
+    return () => {
+      clearTimeout(debounceFetch);
+      clearTimeout(timeoutRef.current);
+    };
   }, [searchQuery]);
 
   const handleSearchChange = (event) => {
@@ -61,7 +74,17 @@ function SearchPage() {
             <strong>Error:</strong> {error}
           </div>
         )}
-        {isLoading && <div className="mt-4 text-gray-600 text-lg">Loading...</div>}
+        {isLoading && (
+          <div className="mt-4 flex justify-center items-center">
+            <svg className="animate-spin h-8 w-8 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V4a10 10 0 00-10 10h2z"></path>
+            </svg>
+          </div>
+        )}
+        {!isLoading && searchResults.length === 0 && searchQuery.trim() && (
+          <div className="mt-4 text-gray-600 text-lg">No players found</div>
+        )}
         {!isLoading && searchResults.length > 0 && (
           <ul className="mt-4 space-y-2">
             {searchResults.map(player => (
