@@ -5,7 +5,7 @@ function PlayerDetailPage() {
   const { tag } = useParams();
   const navigate = useNavigate();
   const [playerData, setPlayerData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -37,97 +37,47 @@ function PlayerDetailPage() {
     </div>
   );
 
-  if (!playerData) return <div>No player data available.</div>;
+  if (!playerData) return <div className="text-gray-600 text-lg">No player data available.</div>;
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <header className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Clash Stats</h1>
+          <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Player Details</h1>
           <div className="flex justify-center mb-6">
             <img
               className="w-24 h-24 rounded-full border-4 border-gray-300"
               src={playerData.clan.badgeUrls.large}
-              alt="Clan Badge"
+              alt={`${playerData.clan.name} Clan Badge`}
             />
           </div>
           <ul className="space-y-4 text-gray-700">
-            <li className="flex justify-between">
-              <span className="font-semibold">Name:</span>
-              <span>{playerData.name}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Tag:</span>
-              <span>{playerData.tag}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Town Hall Level:</span>
-              <span>{playerData.townHallLevel}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Town Hall Weapon Level:</span>
-              <span>{playerData.townHallWeaponLevel}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Experience Level:</span>
-              <span>{playerData.expLevel}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Trophies:</span>
-              <span>{playerData.trophies}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Best Trophies:</span>
-              <span>{playerData.bestTrophies}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">War Stars:</span>
-              <span>{playerData.warStars}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Attack Wins:</span>
-              <span>{playerData.attackWins}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Defense Wins:</span>
-              <span>{playerData.defenseWins}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Builder Hall Level:</span>
-              <span>{playerData.builderHallLevel}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Builder Base Trophies:</span>
-              <span>{playerData.builderBaseTrophies}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Best Builder Base Trophies:</span>
-              <span>{playerData.bestBuilderBaseTrophies}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Role:</span>
-              <span>{playerData.role}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">War Preference:</span>
-              <span>{playerData.warPreference}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Donations:</span>
-              <span>{playerData.donations}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Donations Received:</span>
-              <span>{playerData.donationsReceived}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Clan Name:</span>
-              <span>{playerData.clan.name}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-semibold">Clan Level:</span>
-              <span>{playerData.clan.clanLevel}</span>
-            </li>
+            {Object.entries({
+              'Name': playerData.name,
+              'Tag': playerData.tag,
+              'Town Hall Level': playerData.townHallLevel,
+              'Town Hall Weapon Level': playerData.townHallWeaponLevel,
+              'Experience Level': playerData.expLevel,
+              'Trophies': playerData.trophies,
+              'Best Trophies': playerData.bestTrophies,
+              'War Stars': playerData.warStars,
+              'Attack Wins': playerData.attackWins,
+              'Defense Wins': playerData.defenseWins,
+              'Builder Hall Level': playerData.builderHallLevel,
+              'Builder Base Trophies': playerData.builderBaseTrophies,
+              'Best Builder Base Trophies': playerData.bestBuilderBaseTrophies,
+              'Role': playerData.role,
+              'War Preference': playerData.warPreference,
+              'Donations': playerData.donations,
+              'Donations Received': playerData.donationsReceived,
+              'Clan Name': playerData.clan.name,
+              'Clan Level': playerData.clan.clanLevel,
+            }).map(([key, value]) => (
+              <li key={key} className="flex justify-between">
+                <span className="font-semibold">{key}:</span>
+                <span>{value}</span>
+              </li>
+            ))}
           </ul>
         </header>
         <div className="flex justify-center mt-8">
