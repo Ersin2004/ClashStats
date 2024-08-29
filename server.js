@@ -25,7 +25,6 @@ app.get('/player', async (req, res) => {
   }
 });
 
-// Define a route for the root URL
 app.get('/', (req, res) => {
   res.send('Welcome to the Clash Stats API!');
 });
