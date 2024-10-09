@@ -113,33 +113,3 @@ This project was developed as a small experiment with React and the Clash of Cla
 For questions or feedback, please contact [e.karaduman3838@gmail.com](mailto:e.karaduman3838@gmail.com).
 
 [![Connect with Ersin Karaduman on LinkedIn](https://img.shields.io/badge/Connect_with_Ersin_Karaduman_on_LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ersin-karaduman/)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

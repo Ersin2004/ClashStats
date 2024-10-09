@@ -8,28 +8,47 @@ dotenv.config();
 const app = express();
 const PORT = 5000;
 
-// Cors middleware
 app.use(cors());
 
-// Mock players
-const mockPlayers = [
-  { tag: '#LVRQCP9G0', name: 'Lucky' },
-  { tag: '#20GPPGUL8', name: 'Player 2' },
-  { tag: '#LVRQCP9G0', name: 'Player 3' },
-  { tag: '#LVRQCP9G0', name: 'Player 4' },
-  { tag: '#LVRQCP9G0', name: 'Player 5' },
-];
+app.get('/search', async (req, res) => {
+  const query = req.query.q.trim();
 
-// Endpoint to search players
-app.get('/search', (req, res) => {
-  const query = req.query.q.toLowerCase();
-  const results = mockPlayers.filter(player =>
-    player.name.toLowerCase().includes(query)
-  );
-  res.json(results);
+  if (!query.startsWith('#') || query.length < 2) {
+    return res.status(400).json({ error: 'Invalid tag format. Tags should start with "#" and be URL-encoded.' });
+  }
+
+  try {
+    const playerTag = encodeURIComponent(query);
+    const response = await fetch(`https://api.clashofclans.com/v1/players/${playerTag}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.CLASH_API_TOKEN}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return res.status(404).json({ error: 'Player not found.' });
+      }
+      if (response.status === 403) {
+        return res.status(403).json({ error: 'Access denied. Invalid credentials or token.' });
+      }
+      throw new Error('Failed to fetch player data');
+    }
+
+    const data = await response.json();
+    const playerDetails = {
+      tag: data.tag,
+      name: data.name,
+      clan: data.clan ? data.clan.name : null,
+      trophies: data.trophies,
+      townHallLevel: data.townHallLevel,
+    };
+    res.json(playerDetails);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// Endpoint to get player details
 app.get('/player/:tag', async (req, res) => {
   try {
     const playerTag = encodeURIComponent(req.params.tag);
@@ -38,7 +57,17 @@ app.get('/player/:tag', async (req, res) => {
         Authorization: `Bearer ${process.env.CLASH_API_TOKEN}`,
       },
     });
-    if (!response.ok) throw new Error('Failed to fetch player data');
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return res.status(404).json({ error: 'Player not found.' });
+      }
+      if (response.status === 403) {
+        return res.status(403).json({ error: 'Access denied. Invalid credentials or token.' });
+      }
+      throw new Error('Failed to fetch player data');
+    }
+
     const data = await response.json();
     res.json(data);
   } catch (error) {
