@@ -33,7 +33,7 @@ const PlayerSearch = ({ displayQuery, onChange, onClick, searchResults, isLoadin
         </div>
       )}
       {error && !isLoading && (
-        <div className="mt-4 bg-red text-red p-4 rounded">
+        <div className="mt-4 bg-red text-red p-4 rounded text-white">
           <strong>Error:</strong> {error}
         </div>
       )}
