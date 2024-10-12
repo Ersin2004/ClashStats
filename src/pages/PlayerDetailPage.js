@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Tabs from '../components/Tabs';
 import Overview from '../components/Overview';
 import ClanInfo from '../components/ClanInfo';
-import LegendStatistics from '../components/LegendStatistics';
 import Achievements from '../components/Achievements';
 
 function PlayerDetailPage() {
@@ -51,22 +50,27 @@ function PlayerDetailPage() {
         <header className="text-center mb-6">
           <h1 className="text-3xl font-extrabold text-black">Player Details</h1>
           <div className="flex justify-center mt-4">
-            <img
-              className="w-24 h-24 rounded-full border-4 border-white"
-              src={playerData.clan.badgeUrls.large}
-              alt={`${playerData.clan.name} Clan Badge`}
-            />
+            {playerData.clan ? (
+              <img
+                className="w-24 h-24 rounded-full border-4 border-white"
+                src={playerData.clan.badgeUrls.large}
+                alt={`${playerData.clan.name} Clan Badge`}
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full border-4 border-gray-300 flex items-center justify-center">
+                <span className="text-gray-500">No Clan</span>
+              </div>
+            )}
           </div>
         </header>
 
         {/* Tabs */}
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} hasClan={!!playerData.clan} />
 
         {/* Tab Content */}
         <div>
           {activeTab === 'overview' && <Overview playerData={playerData} />}
-          {activeTab === 'clan' && <ClanInfo playerData={playerData} />}
-          {activeTab === 'legend' && <LegendStatistics playerData={playerData} />}
+          {activeTab === 'clan' && playerData.clan && <ClanInfo playerData={playerData} />}
           {activeTab === 'achievements' && <Achievements playerData={playerData} />}
         </div>
 
